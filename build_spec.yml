@@ -1,0 +1,52 @@
+version: 0.1
+component: build
+timeoutInSeconds: 10000
+runAs: root
+shell: bash
+env:
+  exportedVariables:
+    - BUILDRUN_HASH
+  vaultVariables:
+    OCIRCRED: "ocid1.vaultsecret.oc1.uk-london-1.amaaaaaaxc7u3kiag34fvyatxaryr4q72wqmgb5nm7znk5fe3ccq747ri5ya"
+
+steps:
+  - type: Command
+    name: "Export BUILDRUN_HASH as variable"
+    timeoutInSeconds: 40
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failed to obtain BUILDRUN_HASH"
+        timeoutInSeconds: 400
+        runAs: root
+
+# Build Docker image for php
+  - type: Command
+    name: "Build docker image for nginx app"
+    command: |
+      docker build -t ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH} .
+      docker images
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failed to build Docker container for nginx app"
+        timeoutInSeconds: 400
+        runAs: root
+
+
+# Push nginx and php docker image to OCIR
+  - type: Command
+    name: "Push docker image to OCIR"
+    command: |
+      echo "Login to OCIR"
+      docker login lhr.ocir.io -u ${TENANCY_NAMESPACE}/${OCI_USERNAME} -p ${OCIRCRED}
+      echo "Push Nginx App image to OCIR"
+      docker push ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH}
+    onFailure:
+      - type: Command
+        command: |
+          echo "Failed to push images $BUILDRUN_HASH to OCIR"
+        timeoutInSeconds: 400

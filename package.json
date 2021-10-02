@@ -1,0 +1,13 @@
+{
+  "name": "nodejs_express_hello_world",
+  "version": "1.0.0",
+  "description": "Node.js and express",
+  "author": "Jahangir Alam <jahangir2526@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}

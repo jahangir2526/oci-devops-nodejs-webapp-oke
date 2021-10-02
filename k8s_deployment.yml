@@ -1,0 +1,45 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-web-app-deploy
+  labels:
+    app: node-web-app
+    builder: jahangir
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-web-app
+      builder: jahangir
+  template:
+    metadata:
+      labels:
+        app: node-web-app
+        builder: jahangir
+    spec:
+      containers:
+      - name: node-web-app
+        image: ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH}
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+        - name: ${K8s_IMAGE_PULL_SECRET}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-web-app-service
+  labels:
+    app: node-web-app
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 8080
+    nodePort: 32001
+    name: node-web-app-port
+  selector:
+    app: node-web-app
+    builder: jahangir
+
