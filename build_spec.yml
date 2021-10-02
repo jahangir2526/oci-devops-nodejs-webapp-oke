@@ -27,7 +27,7 @@ steps:
   - type: Command
     name: "Build docker image for nginx app"
     command: |
-      docker build -t ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH} .
+      docker build -t ${P_OCIR_REGION_KEY}.ocir.io/${P_TENANCY_NAMESPACE}/${P_OCIR_REPO_NAME}:${BUILDRUN_HASH} .
       docker images
     onFailure:
       - type: Command
@@ -42,9 +42,9 @@ steps:
     name: "Push docker image to OCIR"
     command: |
       echo "Login to OCIR"
-      docker login lhr.ocir.io -u ${TENANCY_NAMESPACE}/${OCI_USERNAME} -p ${OCIRCRED}
+      docker login lhr.ocir.io -u ${P_TENANCY_NAMESPACE}/${P_OCI_USERNAME} -p ${OCIRCRED}
       echo "Push Nginx App image to OCIR"
-      docker push ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH}
+      docker push ${P_OCIR_REGION_KEY}.ocir.io/${P_TENANCY_NAMESPACE}/${P_OCIR_REPO_NAME}:${BUILDRUN_HASH}
     onFailure:
       - type: Command
         command: |

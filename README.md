@@ -1,6 +1,6 @@
 # Overview
 
-2This project will describe high level steps to setup a **CI/CD using OCI DevOps** to deploy a one page nginx app on a Kubernetes cluster (**OKE**).
+This project will describe high level steps to setup a **CI/CD using OCI DevOps** to deploy a single page nginx app in a Kubernetes cluster (**OKE**).
 
 ## Steps
 
@@ -66,8 +66,10 @@ iii. Push to OCI Code Repo
 OR
 
 ## Mirror Repo
-i. Create External Connection (github/gitlab)
-ii. Mirror Repository, provide mirror schedule (once/default-30mins/custom)
+i. Get the github PAT (personal access token)
+ii. Create a secret using PAT
+iii. Create External Connection (github/gitlab)
+ii. Mirror Repository, select connection, provide mirror schedule (once/default-30mins/custom)
 ```
 #### c) Get & Edit the build_spec.yml file, make sure the changes are in the repository.
 
@@ -75,16 +77,16 @@ ii. Mirror Repository, provide mirror schedule (once/default-30mins/custom)
 ## If needed edit build_spec.yml especially add value for OCIRCRED # ocid of vault secret
 
 ## Variable/Parameter used in build_spec.yml
-OCIR_REGION_KEY
-TENANCY_NAMESPACE
-OCIR_REPO_NAME
-OCI_USERNAME
+P_OCIR_REGION_KEY
+P_TENANCY_NAMESPACE
+P_OCIR_REPO_NAME
+P_OCI_USERNAME
 ```
 
 #### d) Create Build Pipeline
 
 ```
-i. create pipeline
+i. create build pipeline
 ii. create stage->Manage Build-> [Select Primary Code Repository]
 iii. add value for parameters ref-5c to build pipeline Parameter section
 iii. start a manual run to test # by selecting the latest commit hash
@@ -93,7 +95,7 @@ iv. check if build was successfull by checking the docker image
 
 
 
-#### e) Create DevOps environment selecting OKE Cluster
+#### e) Create DevOps environment selecting OKE Cluster(s)
 
 #### f) Edit the deploy.yaml file & create devops artifact
 
@@ -101,18 +103,20 @@ iv. check if build was successfull by checking the docker image
 ## edit k8s_deployment.yaml file as required
 
 ## Variable/Parameter used in build_spec.yml
-OCIR_REGION_KEY
-TENANCY_NAMESPACE
-OCIR_REPO_NAME
-OCI_USERNAME
-K8s_IMAGE_PULL_SECRET
+P_OCIR_REGION_KEY
+P_TENANCY_NAMESPACE
+P_OCIR_REPO_NAME
+P_IMAGE_PULL_SECRET
+BUILDRUN_HASH ## provide if start manual deployment. not required if trigger deployment from build_pipeline
 
 ```
 
 #### g) Create Deployment Pipeline
 
 ```
-i. Steps here
+i. create deployment pipeline
+ii. add stage-> (select Apply manifest to K8s cluster)
+iii. select artifacts
 ii. add values for parameters ref-5f to deploy pipeline Parameter section
 iii. start a manual run and check 
 ```
