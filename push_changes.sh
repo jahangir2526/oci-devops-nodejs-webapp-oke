@@ -6,4 +6,4 @@ fi
 
 git add .
 git commit -m "$1"
-git pull && git push origin main 
+git pull origin feature-branch-1 && git push origin feature-branch-1

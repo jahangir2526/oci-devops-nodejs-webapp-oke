@@ -20,11 +20,11 @@ spec:
     spec:
       containers:
       - name: node-web-app
-        image: ${OCIR_REGION_KEY}.ocir.io/${TENANCY_NAMESPACE}/${OCIR_REPO_NAME}:${BUILDRUN_HASH}
+        image: ${P_OCIR_REGION_KEY}.ocir.io/${P_TENANCY_NAMESPACE}/${P_OCIR_REPO_NAME}:${BUILDRUN_HASH}
         ports:
         - containerPort: 8080
       imagePullSecrets:
-        - name: ${K8s_IMAGE_PULL_SECRET}
+        - name: ${P_IMAGE_PULL_SECRET}
 ---
 apiVersion: v1
 kind: Service
@@ -33,12 +33,12 @@ metadata:
   labels:
     app: node-web-app
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
   - port: 80
     targetPort: 8080
-    nodePort: 32001
-    name: node-web-app-port
+    #nodePort: 32001
+    #name: node-web-app-port
   selector:
     app: node-web-app
     builder: jahangir
