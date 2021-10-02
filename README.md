@@ -1,6 +1,6 @@
 # Overview
 
-1This project will describe high level steps to setup a **CI/CD using OCI DevOps** to deploy a one page nginx app on a Kubernetes cluster (**OKE**).
+This project will describe high level steps to setup a **CI/CD using OCI DevOps** to deploy a one page nginx app on a Kubernetes cluster (**OKE**).
 
 ## Steps
 
